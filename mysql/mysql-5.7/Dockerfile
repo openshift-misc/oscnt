@@ -6,7 +6,7 @@ RUN MYSQL_BIN="https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.19-linux-
     http://mirrors.kernel.org/ubuntu/pool/main/liba/libaio/libaio1_0.3.110-2_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/n/numactl/libnuma1_2.0.11-1ubuntu1_amd64.deb \
     " && \
-  apk update && apk add tar dpkg file binutils && \
+  apk update && apk add dpkg tar && \
   mkdir -p /opt/local/mysql /opt/app/mysql /opt/src && \
   cd /opt/src && wget $PKGS && \
   for pkg in *.deb;do dpkg -x $pkg .;done && \
@@ -14,11 +14,18 @@ RUN MYSQL_BIN="https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.19-linux-
   ldconfig && \
   cd /opt/src && wget $MYSQL_BIN && \
   cd /opt/app/mysql && tar xfz /opt/src/*-*.tar.gz && ln -s *-* current && \
-  bash -c 'rm -rf current/bin/{*embed*,ga*,wsrep*,*debug} current/lib/{*.a,lib*,galera,mecab} current/{data,man,sql-bench,include,mysql-test,[A-Z]*}' && \
-  strip $(find current/lib -type f -name '*.so*') $(find current/bin -type f -perm -u=x) 2>/dev/null || true && \ 
+  cd current && \
+  bash -c 'rm -rf \
+    {data,man,sql-bench,support-files,docs,include,mysql-test,[A-Z]*} \
+    bin/{*embed*,ga*,wsrep*,*debug} lib/{*.a,lib*,galera,mecab} \
+    lib/plugin/{*spider*} bin/{myisam*,aria*,inno*,*slap,*test,*stream} \
+    $(ls -d share/*|egrep -v "err|english|\.sql") \
+    ' && \
+  find /*bin /usr /opt/app -type f \( -perm -100 -o -name '*.so*' \) -exec bash -c 'file \{} | grep -q "not stripped" && strip \{}' \; 2>/dev/null && \
   rm -rf /var/cache/apk/* /tmp/* /opt/src /root/.wget-hsts && \
   chown -R user:root /opt/app/mysql && \
-  chmod -R g+w,g+s /opt/app/mysql
+  chmod -R g+w /opt/app/mysql && \
+  chmod g+s $(find /opt/app/mysql -type d)
 
 COPY opt /opt
 
@@ -28,8 +35,9 @@ RUN cd /opt/local/mysql && mkdir data log && ln -s /opt/app/mysql/current app &&
   cd /opt/local/mysql/app/bin && \
   for f in *;do ln -s mysql-client /opt/local/mysql/bin/$f; ln -s /opt/local/mysql/bin/$f /usr/bin/; done && \
   find /opt/local \( ! -user user -o ! -group root \) -a \( -type d -o -type f \) -exec chown user:root \{} \; && \
-  find /opt/local ! -perm -g=ws -exec chmod g+w,g+s \{} \; && \
-  chmod -R u+x,g+x,o+x /opt/local/mysql/bin/mysql-server /opt/local/mysql/bin/mysql-client $(find /opt/local/entry -type f) $(find /opt/local/cron/periodic -type f) && \
+  find /opt/local ! -perm -g=s -type d -exec chmod g+s \{} \; && \
+  find /opt/local ! -perm -g=w -exec chmod g+w \{} \; && \
+  chmod -R u+x,g+x /opt/local/mysql/bin/mysql-server /opt/local/mysql/bin/mysql-client $(find /opt/local/entry /opt/local/cron/periodic ! -perm -110 -type f) && \
   cd /opt && tar cfz local.container.tar.gz local
 
 USER user

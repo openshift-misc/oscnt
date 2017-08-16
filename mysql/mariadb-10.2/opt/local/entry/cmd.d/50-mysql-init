@@ -9,9 +9,9 @@ if [ ! -e data/mysql/servers.frm ]; then
   fi
   (
     while ! /opt/local/mysql/bin/mysqladmin -u root ping; do sleep 1; done
-    /opt/local/mysql/bin/mysql -u root -e "delete from mysql.user where host not in ('127.0.0.1') or user='';"
+    /opt/local/mysql/bin/mysql -u root -e "delete from mysql.user;"
     /opt/local/mysql/bin/mysql -u root -e "create user 'user'@'127.0.0.1'; grant all privileges on *.* to 'user'@'127.0.0.1' with grant option;"
-    /opt/local/mysql/bin/mysql -u root -e "create user 'user'@'localhost'; grant all privileges on *.* to 'user'@'127.0.0.1' with grant option;"
+    /opt/local/mysql/bin/mysql -u root -e "create user 'user'@'localhost'; grant all privileges on *.* to 'user'@'localhost' with grant option;"
     /opt/local/mysql/bin/mysql -e "flush privileges;"
   ) &
 fi

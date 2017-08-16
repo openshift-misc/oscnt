@@ -2,21 +2,25 @@ FROM alpine:3.6
 CMD ["/opt/entry/cmd"]
 
 RUN apk update && \
-  apk add bash rsync openssh-client tzdata py-pip fakeroot logrotate \
-      htop git wget curl && \
+  apk add bash rsync dropbear-ssh tzdata py-pip fakeroot logrotate \
+      file binutils wget ca-certificates htop && \
   pip install supervisor && \
-  rm -rf /root/.cache /var/cache/apk/* /tmp/* && mkdir -p /opt/local && \
+  ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
+  rm -rf /root/.cache /var/cache/apk/* /tmp/* /usr/share/zoneinfo /usr/share/terminfo && \
+  rm -rf $(find /usr/lib/python* -name '*.pyc' -o -name '*.pyo') && supervisord -h > /dev/null && supervisorctl -h > /dev/null && \
+  find /*bin /usr -type f \( -perm -100 -o -name '*.so*' \) -exec bash -c 'file \{} | grep -q "not stripped" && strip \{}' \; 2>/dev/null && \
+  mkdir -p /opt/local && \
   adduser -D -G root -h /opt/local -s /bin/bash user 
 
 COPY opt /opt
 
 RUN chown -R user:root /opt/local && \
-  chmod -R g+w,g+s /opt/local && \
-  chmod -R u+x,g+x,o+x /opt/entry/cmd $(find /opt/local/entry -type f) $(find /opt/local/cron/periodic -type f) && \
+  chmod -R g+w /opt/local && \
+  chmod g+s $(find /opt/local -type d) && \
+  chmod u+x,g+x /opt/entry/cmd $(find /opt/local/entry /opt/local/cron/periodic -type f) && \
   ( cd /opt && tar cfz local.container.tar.gz local ) && \
-  chmod g+w /etc/passwd && \
   ln -sf /opt/local/supervisor/supervisord.conf /etc/ && \
-  ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
+  chmod g+w /etc/passwd
 
 # Keeping user root by default as containers that use this as library
 # may need to install additional packages.
