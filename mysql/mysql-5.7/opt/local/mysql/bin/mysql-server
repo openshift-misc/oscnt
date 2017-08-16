@@ -1,0 +1,31 @@
+#!/bin/bash
+
+. /opt/local/mysql/etc/default
+cd ${MYSQL_BASEDIR}
+cmd="./bin/mysqld --defaults-file=${MYSQL_HOME}/my.cnf"
+
+_term() {
+  echo "Shutting down"
+  kill -TERM "$child" 2>/dev/null
+}
+
+trap _term SIGTERM
+
+echo "Running '${cmd}'"
+${cmd} &
+
+child=$!
+wait "${child}"
+ret=$?
+
+if [ ${ret} -eq 143 ]; then
+  echo "Child ${child} killed with SIGTERM"
+  ret=0
+elif [ ${ret} -eq 0 ]; then
+  echo "Child ${child} exit normally"
+else
+  echo "Unexpected error, exit code $ret"
+  sleep 5
+fi
+
+exit ${ret}

@@ -1,0 +1,7 @@
+[mysqld]
+port            = 3306
+socket          = /tmp/mysql/server.sock
+pid_file        = /tmp/mysql/mysqld.pid
+basedir         = /opt/local/mysql
+log_error       = /opt/local/mysql/log/error.log
+user            = user

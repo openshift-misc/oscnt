@@ -1,0 +1,3 @@
+#!/bin/bash
+find /opt/local \( ! -user user -o ! -group root \) -type d -exec chown user:root \{} \; 2>/dev/null || true
+find /opt/local \( ! -user user -o ! -group root \) -type f -exec chown user:root \{} \; 2>/dev/null || true

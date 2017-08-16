@@ -1,0 +1,21 @@
+#!/bin/sh
+LOCAL=/opt/local
+ENTRY=${LOCAL}/entry/cmd
+
+if [ $(id -u) -gt 0 ];then
+  sed "s/^user:\(.*\):[0-9]\+:\([0-9]\+\):.*:\(.*:.*\)/user:\1:$(id -u):\2:Openshift Container User:\3/g" < /etc/passwd > /tmp/passwd
+  cat /tmp/passwd > /etc/passwd
+  rm /tmp/passwd
+fi
+
+if [ -x "${ENTRY}" ]; then
+  exec "${ENTRY}"
+else
+  echo
+  echo "Container started, running as '$(id)'"
+  echo "${ENTRY} not found."
+  echo "If you just mounted an empty persistent storage on ${LOCAL},"
+  echo "extract ${LOCAL}.container.tar.gz, then restart."
+  echo
+  exec tail -f /dev/stderr
+fi

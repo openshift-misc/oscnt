@@ -1,0 +1,3 @@
+#!/bin/sh
+run-parts /opt/local/entry/cmd.d
+exec supervisord -n -c /etc/supervisord.conf
