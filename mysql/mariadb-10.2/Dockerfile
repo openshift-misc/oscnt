@@ -21,11 +21,10 @@ RUN MYSQL_BIN="https://downloads.mariadb.org/f/mariadb-10.2.7/bintar-linux-glibc
     lib/plugin/{*spider*} bin/{myisam*,aria*,inno*,*slap,*test,*stream} \
     $(ls -d share/*|egrep -v "err|english|\.sql") \
     ' && \
-  find /*bin /usr /opt/app -type f \( -perm -100 -o -name '*.so*' \) -exec bash -c 'file \{} | grep -q "not stripped" && strip \{}' \; 2>/dev/null && \
-  rm -rf /var/cache/apk/* /tmp/* /opt/src /root/.wget-hsts && \
-  chown -R user:root /opt/app/mysql && \
-  chmod -R g+w /opt/app/mysql && \
-  chmod g+s $(find /opt/app/mysql -type d)
+  PATH=/opt/app/scripts:$PATH && export PATH && \
+  strip_all /*bin /usr /opt/app/mysql && \
+  chownmod /opt/app/mysql && \
+  rm -rf /var/cache/apk/* /tmp/* /opt/src /root/.wget-hsts
 
 COPY opt /opt
 
@@ -34,10 +33,8 @@ RUN cd /opt/local/mysql && mkdir data log && ln -s /opt/app/mysql/current app &&
   if [ -d app/scripts ];then ln -s app/scripts;fi && \
   cd /opt/local/mysql/app/bin && \
   for f in *;do ln -s mysql-client /opt/local/mysql/bin/$f; ln -s /opt/local/mysql/bin/$f /usr/bin/; done && \
-  find /opt/local \( ! -user user -o ! -group root \) -a \( -type d -o -type f \) -exec chown user:root \{} \; && \
-  find /opt/local ! -perm -g=s -type d -exec chmod g+s \{} \; && \
-  find /opt/local ! -perm -g=w -exec chmod g+w \{} \; && \
-  chmod -R u+x,g+x /opt/local/mysql/bin/mysql-server /opt/local/mysql/bin/mysql-client $(find /opt/local/entry /opt/local/cron/periodic ! -perm -110 -type f) && \
-  cd /opt && tar cfz local.container.tar.gz local
+  PATH=/opt/app/scripts:$PATH && export PATH && \
+  set_executable /opt/local/mysql/bin/mysql-server /opt/local/mysql/bin/mysql-client /opt/local/entry /opt/local/cron/periodic && \
+  chownmod /opt/local && create_local_archive
 
 USER user

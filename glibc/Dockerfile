@@ -15,11 +15,11 @@ RUN PKGS=" \
   for pkg in *.deb;do dpkg -x $pkg .;done && \
   cp -a $(find lib usr -name 'l*.so*') /usr/lib/x86_64-linux-gnu/ && \
   tar cf - etc/ld* sbin usr/sbin usr/bin usr/lib/locale/C.UTF-8 | ( cd / && tar xvf - ) && \
-  find /*bin /usr -type f \( -perm -100 -o -name '*.so*' \) -exec bash -c 'file \{} | grep -q "not stripped" && strip \{}' \; 2>/dev/null && \
   cp usr/share/libc-bin/nsswitch.conf /etc/ && \
   ln -sf /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib64/ && \
   ln -s /usr/lib/x86_64-linux-gnu /opt/glibc && \
   ldconfig && \
+  /opt/app/scripts/strip_all /*bin /usr && \
   rm -rf /var/cache/apk/* /tmp/* /opt/src /root/.wget-hsts
 
 ENV LANG=C.UTF-8
