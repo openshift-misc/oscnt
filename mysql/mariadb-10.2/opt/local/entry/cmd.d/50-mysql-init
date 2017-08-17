@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! -e data/mysql/servers.frm ]; then 
+if [ ! -e /opt/local/mysql/data/mysql/servers.frm ]; then 
   . /opt/local/mysql/etc/default
   cd ${MYSQL_BASEDIR}
   if [ -x ./scripts/mysql_install_db ]; then 
