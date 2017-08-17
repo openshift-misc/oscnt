@@ -2,7 +2,7 @@ FROM alpine:3.6
 CMD ["/opt/entry/cmd"]
 COPY opt /opt
 
-RUN apk update && \
+RUN apk update && apk upgrade && \
   apk add bash rsync dropbear-ssh tzdata py-pip fakeroot logrotate \
       file binutils wget ca-certificates htop && \
   pip install supervisor && \

@@ -1,7 +1,8 @@
 FROM oscnt/base
 EXPOSE 1080 1443
 
-RUN apk update && apk add git apache2 apache2-ssl apache2-http2 apache2-proxy \
+RUN apk update && apk upgrade && \
+  apk add git apache2 apache2-ssl apache2-http2 apache2-proxy \
       php5-cli php5-fpm php5-pdo_pgsql php5-pdo_mysql php5-pdo_sqlite \
       php5-pgsql php5-mysql php5-mysqli php5-sqlite3 php5-odbc \
       php5-ctype php5-soap php5-json php5-dom php5-curl php5-xml \

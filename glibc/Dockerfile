@@ -17,7 +17,6 @@ RUN PKGS=" \
   tar cf - etc/ld* sbin usr/sbin usr/bin usr/lib/locale/C.UTF-8 | ( cd / && tar xvf - ) && \
   cp usr/share/libc-bin/nsswitch.conf /etc/ && \
   ln -sf /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib64/ && \
-  ln -s /usr/lib/x86_64-linux-gnu /opt/glibc && \
   ldconfig && \
   /opt/app/scripts/strip_all /*bin /usr && \
   rm -rf /var/cache/apk/* /tmp/* /opt/src /root/.wget-hsts
