@@ -6,7 +6,7 @@ RUN apk update && apk upgrade && \
   apk add bash rsync dropbear-ssh tzdata py-pip fakeroot logrotate \
       file binutils wget ca-certificates htop && \
   pip install supervisor && \
-  ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && apk del tzdata && \
+  cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && apk del tzdata && \
   rm -rf /root/.cache /var/cache/apk/* /tmp/* /usr/share/terminfo && \
   rm -rf $(find /usr/lib/python* -name '*.pyc' -o -name '*.pyo') && supervisord -h > /dev/null && supervisorctl -h > /dev/null && \
   ln -sf /opt/local/supervisor/supervisord.conf /etc/ && \
