@@ -1,3 +1,2 @@
 #!/bin/sh
 mkdir -p /tmp/supervisor
-chown user:root /tmp/supervisor
