@@ -1,0 +1,7 @@
+BUILD="/opt/app/build/bin"
+SRC="/opt/src"
+UBUNTU="${SRC}/ubuntu"
+URL="http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04-core-amd64.tar.gz"
+IMG=$(basename ${URL})
+
+export BUILD SRC UBUNTU URL IMG

@@ -1,0 +1,24 @@
+Listen 1443
+
+<VirtualHost _default_:1443>
+  # At minimum, you need to edit Server Name
+  # and provide ssl certs
+  ServerName https://some.domain
+
+  SSLCertificateFile      /opt/local/ssl/server.crt
+  SSLCertificateKeyFile   /opt/local/ssl/server.key
+  SSLCertificateChainFile /opt/local/ssl/intermediate.crt
+
+  SSLEngine on
+  Protocols h2 http/1.1
+
+  <FilesMatch "\.(cgi|shtml|phtml|php)$">
+    SSLOptions +StdEnvVars
+  </FilesMatch>
+
+  BrowserMatch "MSIE [2-6]" \
+  nokeepalive ssl-unclean-shutdown \
+  downgrade-1.0 force-response-1.0
+  # MSIE 7 and newer should be able to use keepalive
+  BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+</VirtualHost>

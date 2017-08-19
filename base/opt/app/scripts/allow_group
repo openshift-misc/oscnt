@@ -1,0 +1,4 @@
+#!/bin/bash
+find "$@" \( ! -user user -o ! -group root \) -a \( -type d -o -type f \) -exec chown user:root \{} \; 
+find "$@" ! -perm -g=s -type d -exec chmod u+x,g+x,g+s \{} \; 
+find "$@" ! -perm -g=w -exec chmod u+r,u+w,g+r,g+w \{} \; 

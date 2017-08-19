@@ -1,5 +1,5 @@
 FROM alpine:3.6
-CMD ["/opt/entry/cmd"]
+CMD ["/sbin/init"]
 COPY opt /opt
 
 RUN apk update && apk upgrade && \
@@ -15,8 +15,9 @@ RUN apk update && apk upgrade && \
   echo_supervisord_conf > /etc/supervisord.sample.conf && \
   adduser -D -G root -h /opt/local -s /bin/bash user && \
   chmod g+w /etc/passwd && \
-  chmod u+x,g+x /opt/app/scripts/* && \
+  chmod u+r,u+x,g+r,g+x /opt/app/scripts/* && \
   PATH=/opt/app/scripts:$PATH && export PATH && \
-  strip_all /*bin /usr && chownmod /opt/local && \
-  set_executable /opt/entry /opt/local/entry /opt/local/cron/periodic && \
+  strip_all /*bin /usr && allow_group /opt/local && \
+  set_executable /opt/app/init /opt/local/init /opt/local/cron/periodic && \
+  ln -sf /opt/app/init/cmd /sbin/init && \
   create_local_archive 

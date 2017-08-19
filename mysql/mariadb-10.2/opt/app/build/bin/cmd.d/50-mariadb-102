@@ -1,0 +1,21 @@
+#!/bin/bash
+mkdir -p /opt/app/mysql/{bin,lib,share,scripts} /opt/local/mysql/{data,log}
+cd ${UBUNTU}
+
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' mariadb-client mariadb-server mariadb-backup-10.2 mariadb-plugin-tokudb mariadb-plugin-connect
+chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
+
+cd ${UBUNTU}/rootfs
+cp -a usr/lib/mysql/* /opt/app/mysql/lib/
+cp -a usr/share/mysql/* /opt/app/mysql/share/
+cp -a usr/*bin/{my_,mysql,maria,resolv}* /opt/app/mysql/bin/
+mv /opt/app/mysql/bin/mysql_install_db /opt/app/mysql/scripts/
+ln -s /opt/app/mysql /opt/local/mysql/app
+
+cd /opt/app/mysql
+rm -rf $(ls -d share/*|egrep -v "err|english|\.sql")
+cd bin
+for f in *; do ln -s mysql-client /opt/local/mysql/bin/$f; ln -s /opt/local/mysql/bin/$f /usr/bin/; done
+
+cd /opt/local/mysql
+for d in lib share scripts; do ln -s /opt/app/mysql/$d; done
