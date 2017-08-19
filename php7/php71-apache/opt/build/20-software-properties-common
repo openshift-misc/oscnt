@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ${UBUNTU}
+chroot . apt -y update
+chroot . apt install -y --no-install-recommends software-properties-common

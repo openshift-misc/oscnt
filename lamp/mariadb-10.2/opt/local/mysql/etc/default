@@ -1,0 +1,3 @@
+export LOCAL=/opt/local
+MYSQL_BASEDIR=${LOCAL}/mysql
+export MYSQL_HOME=${MYSQL_BASEDIR}/etc
