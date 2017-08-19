@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/find /dev/shm/php71/session/ -mindepth 1 -type f -mmin +60 -delete

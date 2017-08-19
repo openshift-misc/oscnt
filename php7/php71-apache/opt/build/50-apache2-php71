@@ -1,0 +1,39 @@
+#!/bin/bash
+mkdir -p ${UBUNTU}/{pkg,rootfs} /usr/lib/x86_64-linux-gnu /lib64 /opt/app/{apache2,php71}/bin /opt/local/{apache2,php71}/log
+touch ${UBUNTU}/pkg/status
+cd ${UBUNTU}
+
+# Download packages
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' libc-bin apache2 	unixodbc-dev php7.1-cli php7.1-fpm php7.1-pgsql php7.1-mysql php7.1-mysqli php7.1-sqlite3 php7.1-odbc php7.1-mbstring php7.1-ctype php7.1-soap php7.1-json php7.1-dom php7.1-curl php7.1-xml php7.1-ldap php7.1-mcrypt php7.1-gd php7.1-opcache
+chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
+
+# libs
+cd ${UBUNTU}/rootfs
+cp -a usr/lib/l*.so* $(find lib/x86_64-linux-gnu usr/lib/x86_64-linux-gnu -name 'l*.so*') /usr/lib/x86_64-linux-gnu/
+cp usr/share/libc-bin/nsswitch.conf /etc/
+tar cf - etc/ld.* {sbin,usr/bin}/ld* usr/lib/locale/C.UTF-8 | ( cd / && tar xvf - )
+ln -sf /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib64/
+ldconfig
+
+# isql
+touch /etc/odbc.ini /etc/odbcinst.ini
+cp -a usr/bin/isql /usr/bin/
+
+# apache2
+cp -a usr/lib/apache2/modules /opt/app/apache2/
+cp -a usr/sbin/apache2 /opt/app/apache2/bin/httpd
+ln -s /opt/app/apache2/modules /opt/local/apache2/
+
+# php7.1
+cd ${UBUNTU}/rootfs
+mkdir -p /opt/app/php71/modules /opt/local/php71/conf.d
+cp -a usr/lib/php/*/*.so /opt/app/php71/modules/
+cp -a usr/sbin/php-fpm7.1 /opt/app/php71/bin/php-fpm71
+cp -a usr/bin/php7.1 /opt/app/php71/bin/php71
+ln -s /opt/app/php71/bin/php /usr/bin/
+ln -s /opt/app/php71/modules /opt/local/php71/
+cd /opt/local/php71/modules
+for f in *.so;do echo "extension=$f" > /opt/local/php71/conf.d/$(basename $f .so).ini;done
+cd /opt/local/php71/conf.d/
+for f in mysqlnd xml;do mv $f.ini 20-$f.ini;done
+rm opcache.ini; echo zend_extension=opcache.so > 10-opcache.ini
