@@ -1,17 +1,11 @@
 #!/bin/bash
-mkdir -p ${UBUNTU}/{pkg,rootfs} /usr/lib/x86_64-linux-gnu /lib64 /opt/app/mysql/{bin,lib,share,scripts} /opt/local/mysql/{data,log}
-touch ${UBUNTU}/pkg/status
+mkdir -p /opt/app/mysql/{bin,lib,share,scripts} /opt/local/mysql/{data,log}
 cd ${UBUNTU}
 
-# Download packages
 chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' mariadb-client mariadb-server mariadb-backup-10.2 mariadb-plugin-tokudb mariadb-plugin-connect
 chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
 
-# mariadb
 cd ${UBUNTU}/rootfs
-
-for f in $(find lib/x86_64-linux-gnu usr/lib/x86_64-linux-gnu -name 'lib*.so*');do test -e /usr/lib/x86_64-linux-gnu/$(basename $f) || cp -a $f /usr/lib/x86_64-linux-gnu/;done
-
 cp -a usr/lib/mysql/* /opt/app/mysql/lib/
 cp -a usr/share/mysql/* /opt/app/mysql/share/
 cp -a usr/*bin/{my_,mysql,maria,resolv}* /opt/app/mysql/bin/
