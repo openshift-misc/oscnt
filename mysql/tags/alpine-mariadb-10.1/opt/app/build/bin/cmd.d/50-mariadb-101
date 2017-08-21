@@ -1,0 +1,20 @@
+#!/bin/bash -xe
+apk add libaio libstdc++ mariadb mariadb-client
+
+rm -rf $(ls -d /usr/share/mysql/*|egrep -v "err|english|\.sql")
+rm -r $(ls -d /usr/lib/mysql/plugin/ha_*|egrep -v "innodb")
+
+mkdir -p /opt/app/mysql/{bin,lib,share,scripts} /opt/local/mysql/{data,log}
+for f in /usr/lib/mysql/*; do mv $f /opt/app/mysql/lib/; done
+for f in /usr/share/mysql/*; do mv $f /opt/app/mysql/share/; done
+for f in /usr/*bin/{my_,mysql,resolv}*; do mv $f /opt/app/mysql/bin/; done
+mv /opt/app/mysql/bin/mysql_install_db /opt/app/mysql/scripts/
+apk del mariadb mariadb-client
+
+ln -s /opt/app/mysql /opt/local/mysql/app
+cd /opt/app/mysql
+cd bin
+for f in *; do ln -s mysql-client /opt/local/mysql/bin/$f; ln -s /opt/local/mysql/bin/$f /usr/bin/; done
+
+cd /opt/local/mysql
+for d in lib share scripts; do ln -s /opt/app/mysql/$d; done
