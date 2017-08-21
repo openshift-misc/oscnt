@@ -1,3 +1,0 @@
-#!/bin/bash
-cd ${UBUNTU}
-chroot . apt -y update

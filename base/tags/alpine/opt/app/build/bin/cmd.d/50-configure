@@ -1,0 +1,6 @@
+#!/bin/bash -xe
+rm -rf /usr/share/terminfo
+ln -f /usr/share/zoneinfo/Asia/Jakarta /etc/localtime 
+adduser -D -G root -h /opt/local -s /bin/bash user 
+chmod g+w /etc/passwd 
+ln -sf /opt/app/init/cmd /sbin/init 

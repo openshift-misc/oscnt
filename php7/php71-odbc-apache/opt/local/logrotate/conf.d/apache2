@@ -1,5 +1,0 @@
-/opt/local/apache2/log/*log {
-    postrotate
-        kill -USR1 $(cat /tmp/apache2/httpd.pid) || true
-    endscript
-}

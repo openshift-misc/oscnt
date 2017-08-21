@@ -1,5 +1,0 @@
-/opt/local/mysql/log/*log {
-    postrotate
-        /opt/local/mysql/bin/mysqladmin flush-logs || true
-    endscript
-}

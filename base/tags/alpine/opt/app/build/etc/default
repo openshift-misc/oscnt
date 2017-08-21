@@ -1,0 +1,5 @@
+BUILD="/opt/app/build"
+SRC=""
+PATH=${BUILD}/bin:$PATH
+
+export BUILD SRC PATH

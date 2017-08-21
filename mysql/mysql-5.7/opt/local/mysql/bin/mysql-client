@@ -1,3 +1,0 @@
-#!/bin/bash
-. /opt/local/mysql/etc/default
-exec ${MYSQL_BASEDIR}/app/bin/$(basename $0) "$@"

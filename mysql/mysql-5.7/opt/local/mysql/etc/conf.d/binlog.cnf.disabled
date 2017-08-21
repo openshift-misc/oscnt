@@ -1,4 +1,0 @@
-[mysqld]
-server-id       = 99
-log-bin         = mysql-bin
-binlog_format   = mixed

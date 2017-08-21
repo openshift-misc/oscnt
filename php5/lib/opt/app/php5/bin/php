@@ -1,0 +1,3 @@
+#!/bin/bash
+export PHP_INI_SCAN_DIR="/opt/local/php5/conf.d"
+exec /opt/app/php5/bin/php5 -c /opt/local/php5 "$@"

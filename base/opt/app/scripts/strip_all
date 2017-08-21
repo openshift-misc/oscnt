@@ -1,2 +1,0 @@
-#!/bin/bash
-find "$@" -type f \( -perm -100 -o -name '*.so*' \) -exec /opt/app/scripts/strip \{} \;

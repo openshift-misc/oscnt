@@ -1,3 +1,0 @@
-#!/bin/bash
-BIN=$1
-file "${BIN}" | grep -q "not stripped" && /usr/bin/strip "${BIN}" 2>/dev/null

@@ -1,5 +1,0 @@
-#!/bin/bash
-. /opt/app/build/etc/default
-run-parts ${BUILD}/pre.d
-run-parts ${BUILD}/cmd.d
-run-parts ${BUILD}/post.d
