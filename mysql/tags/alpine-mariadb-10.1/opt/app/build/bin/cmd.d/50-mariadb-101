@@ -4,7 +4,7 @@ apk add libaio libstdc++ mariadb mariadb-client
 rm -rf $(ls -d /usr/share/mysql/*|egrep -v "err|english|\.sql")
 rm -r $(ls -d /usr/lib/mysql/plugin/ha_*|egrep -v "innodb")
 
-mkdir -p /opt/app/mysql/{bin,lib,share,scripts} /opt/local/mysql/{data,log}
+mkdir -p /opt/app/mysql/{bin,lib,share,scripts} /opt/local/mysql/log
 for f in /usr/lib/mysql/*; do mv $f /opt/app/mysql/lib/; done
 for f in /usr/share/mysql/*; do mv $f /opt/app/mysql/share/; done
 for f in /usr/*bin/{my_,mysql,resolv}*; do mv $f /opt/app/mysql/bin/; done

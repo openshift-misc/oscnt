@@ -1,5 +1,5 @@
 #!/bin/bash
-mkdir -p /opt/app/mysql/{bin,lib,share} /opt/local/mysql/{data,log}
+mkdir -p /opt/app/mysql/{bin,lib,share} /opt/local/mysql/log
 cd ${UBUNTU}
 
 chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' mysql-client-5.7 mysql-server-5.7

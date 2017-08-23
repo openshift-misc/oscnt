@@ -2,7 +2,7 @@
 mkdir -p /opt/app/{apache2,php71}/bin /opt/local/{apache2,php71}/log
 cd ${UBUNTU}
 
-chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' libc-bin apache2 	unixodbc-dev php7.1-cli php7.1-fpm php7.1-pgsql php7.1-mysql php7.1-mysqli php7.1-sqlite3 php7.1-odbc php7.1-mbstring php7.1-ctype php7.1-soap php7.1-json php7.1-dom php7.1-curl php7.1-xml php7.1-ldap php7.1-mcrypt php7.1-gd php7.1-opcache
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' libc-bin git apache2 	unixodbc-dev php7.1-cli php7.1-fpm php7.1-pgsql php7.1-mysql php7.1-mysqli php7.1-sqlite3 php7.1-odbc php7.1-mbstring php7.1-ctype php7.1-soap php7.1-json php7.1-dom php7.1-curl php7.1-xml php7.1-ldap php7.1-mcrypt php7.1-gd php7.1-opcache
 chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
 
 cd ${UBUNTU}/rootfs
