@@ -1,20 +1,19 @@
 #!/bin/sh
-LOCAL=/opt/local
-ENTRY=${LOCAL}/init/cmd
-ENTRY_COMPAT=${LOCAL}/entry/cmd
+CMD=${LOCAL}/init/cmd
+CMD_COMPAT=${LOCAL}/entry/cmd
 
 echo
 echo "Container started, running as '$(id)'."
 echo
 
-if [ -x "${ENTRY}" ]; then
-  exec "${ENTRY}"
-elif [ -x "${ENTRY_COMPAT}" ]; then
-  echo "${ENTRY} not found. Make sure your persistent storage is up to date."
-  echo "Running ${ENTRY_COMPAT} instead."
-  exec "${ENTRY_COMPAT}"
+if [ -x "${CMD}" ]; then
+  exec "${CMD}"
+elif [ -x "${CMD_COMPAT}" ]; then
+  echo "${CMD} not found. Make sure your persistent storage is up to date."
+  echo "Running ${CMD_COMPAT} instead."
+  exec "${CMD_COMPAT}"
 else
-  echo "${ENTRY} not found."
+  echo "${CMD} not found."
   echo "If you just mounted an empty persistent storage on ${LOCAL},"
   echo "extract ${LOCAL}.container.tar.gz, then restart."
   echo

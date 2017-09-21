@@ -1,6 +1,9 @@
 #!/bin/bash -xe
 rm -rf /usr/share/terminfo
 ln -f /usr/share/zoneinfo/Asia/Jakarta /etc/localtime 
-adduser -D -G root -h /opt/local -s /bin/bash user 
+adduser -D -G root -h ${LOCAL} -s /bin/bash user 
 chmod g+w /etc/passwd 
-ln -sf /opt/app/init/cmd /sbin/init 
+ln -sf bash /bin/sh
+ln -sf ${APP}/init/cmd /sbin/init 
+ln -s ${APP}/scripts/crontab /usr/local/bin/
+echo ". ${LOCAL}/env/load" > /etc/profile.d/env.sh

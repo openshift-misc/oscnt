@@ -1,2 +1,2 @@
 #!/bin/bash
-su - user -c 'run-parts /opt/local/init/cmd.d'
+su -l user -c '. /etc/profile; run-parts ${LOCAL}/init/cmd.d'

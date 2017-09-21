@@ -1,2 +1,2 @@
 #!/bin/bash
-supervisorctl.real -c /opt/local/supervisor/supervisord.conf "$@"
+supervisorctl.real -c ${LOCAL}/supervisor/supervisord.conf "$@"

@@ -1,2 +1,2 @@
 #!/bin/bash
-run-parts /opt/local/init/cmd.d
+run-parts ${LOCAL}/init/cmd.d

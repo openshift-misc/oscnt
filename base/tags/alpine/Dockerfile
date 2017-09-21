@@ -1,6 +1,7 @@
 # Build from 'base' directory
 # docker build -t test -f tags/alpine/Dockerfile .
 FROM alpine:3.6
+ENV LANG=C.UTF-8 LOCAL=/opt/local APP=/opt/app
 CMD ["/sbin/init"]
 COPY lib/opt tags/alpine/opt /opt.build/
 

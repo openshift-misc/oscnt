@@ -1,0 +1,15 @@
+#!/bin/bash
+USERHOME=${LOCAL}/home
+
+if ! grep -q ${USERHOME} /etc/passwd; then
+  mkdir -p ${USERHOME}
+  chown user:root ${USERHOME}
+  sed "s|:${LOCAL}:|:${USERHOME}:|g" < /etc/passwd > /tmp/passwd
+  cat /tmp/passwd > /etc/passwd
+  rm /tmp/passwd
+  cd ${USERHOME}
+  mv ${LOCAL}/.???* .
+  for d in ../www/html ../mysql ../apache2 ../php*;do
+    if [ -d $d ]; then ln -s $d .; fi
+  done
+fi

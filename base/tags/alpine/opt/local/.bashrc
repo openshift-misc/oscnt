@@ -1,3 +1,3 @@
-if [ -f /opt/local/bash/aliases ]; then 
-    . /opt/local/bash/aliases
+if [ -f ${LOCAL}/bash/aliases ]; then 
+    . ${LOCAL}/bash/aliases
 fi
