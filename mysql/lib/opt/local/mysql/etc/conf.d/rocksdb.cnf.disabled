@@ -1,2 +1,2 @@
 [mariadb]
-plugin-load-add=ha_rocksdb.so
+plugin_load_add=ha_rocksdb.so

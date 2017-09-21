@@ -1,0 +1,3 @@
+[mysqld]
+# Set sql_mode to empty for compatibility
+sql_mode = 
