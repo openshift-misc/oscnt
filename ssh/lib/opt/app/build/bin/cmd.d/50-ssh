@@ -1,0 +1,4 @@
+#!/bin/bash -xe
+apk update
+apk add dropbear openssh-keygen openssh-sftp-server byobu py-newt xauth
+ln -s /opt/app/scripts/true /usr/local/bin/locale

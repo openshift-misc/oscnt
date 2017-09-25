@@ -1,0 +1,20 @@
+#!/bin/bash
+BASEDIR=${LOCAL}/ssh
+USERHOME=${LOCAL}/home
+SSHDIR=${USERHOME}/.ssh
+
+if [ ! -e ${BASEDIR}/dropbear_rsa_host_key ]; then 
+  mkdir -p ${BASEDIR}
+  cd ${BASEDIR}
+  dropbearkey -t rsa -f dropbear_rsa_host_key
+fi
+
+if [ ! -e ${SSHDIR}/id_rsa ]; then
+  mkdir -p ${SSHDIR}
+  cd ${SSHDIR}
+  ssh-keygen -t rsa -f id_rsa -N ''
+  cp id_rsa.pub authorized_keys
+fi
+
+chown user:root ${USERHOME} ${SSHDIR}
+chmod 700 ${USERHOME} ${SSHDIR}
