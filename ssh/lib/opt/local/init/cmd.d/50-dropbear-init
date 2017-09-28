@@ -18,3 +18,4 @@ fi
 
 chown user:root ${USERHOME} ${SSHDIR}
 chmod 700 ${USERHOME} ${SSHDIR}
+chmod 600 ${SSHDIR}/*
