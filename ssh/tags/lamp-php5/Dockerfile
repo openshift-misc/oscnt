@@ -4,7 +4,8 @@ FROM oscnt/lamp:php5-root
 EXPOSE 10022
 COPY lib/opt tags/lamp-php5/opt /opt.build/
 
+# Force docker rebuild
 RUN  rm -f /opt/app/build/bin/pre.d/* /opt/app/build/bin/post.d/70-update-libs && \
-  . /opt/app/build/bin/build_init
+  . /opt/app/build/bin/build_init --comment=mariadb-10.2.9
 
 USER user
