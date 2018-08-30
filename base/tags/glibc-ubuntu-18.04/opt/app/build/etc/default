@@ -1,0 +1,8 @@
+BUILD="/opt/app/build"
+SRC="/opt/src"
+UBUNTU="${SRC}/ubuntu"
+URL="http://cdimage.ubuntu.com/ubuntu-base/releases/18.04.1/release/ubuntu-base-18.04.1-base-amd64.tar.gz"
+IMG=$(basename ${URL})
+PATH=${BUILD}/bin:${PATH}
+
+export BUILD SRC UBUNTU URL IMG PATH
