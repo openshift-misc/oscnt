@@ -1,0 +1,5 @@
+#!/bin/bash -xe
+mv /opt /opt.build.tmp
+mv /opt.build /opt
+cp -al /opt.build.tmp/* /opt/
+rm -rf /opt.build.tmp

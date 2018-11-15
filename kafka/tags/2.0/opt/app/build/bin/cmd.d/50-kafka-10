@@ -1,0 +1,24 @@
+#!/bin/bash -xe
+rm -f /opt/app/build/bin/post.d/{70-update-libs,80-root-profile}
+
+mkdir -p /tmp/kafka
+cd /tmp/kafka
+wget -c http://www-us.apache.org/dist/kafka/2.0.1/kafka_2.11-2.0.1.tgz
+tar xvfz kafka*tgz
+rm -f *.tgz
+chown -R root:root kafka*
+mkdir -p /opt/app/kafka
+mv kafka*/* /opt/app/kafka
+rmdir kafka*
+
+mkdir -p /opt/local/kafka; cd /opt/local/kafka
+for f in ../../app/kafka/*; do ln -s $f;done
+rm -f bin; mkdir bin; cd bin
+for f in ../../../app/kafka/bin/*; do ln -s $f;done
+cd ..
+mv config config.dist; mkdir config; cd config
+for f in ../../../app/kafka/config/*; do ln -s $f;done
+mv server.properties server.properties.dist
+cp server.properties.dist server.properties
+sed -i 's|log.dirs=/tmp/kafka-logs|log.dirs=/opt/local/kafka/kafka-logs|g' server.properties
+cd ..
