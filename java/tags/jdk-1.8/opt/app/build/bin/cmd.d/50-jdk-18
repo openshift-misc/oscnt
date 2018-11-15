@@ -1,0 +1,16 @@
+#!/bin/bash -xe
+cd ${UBUNTU}
+mkdir -p /opt/app/java
+
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' openjdk-8-jdk-headless
+chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
+
+cd ${UBUNTU}/rootfs
+cp -a usr/lib/jvm/java-8-openjdk-amd64/* /opt/app/java/
+cp -a etc/java-8-openjdk /etc/
+
+mkdir -p /opt/local/java
+cd /opt/local/java
+for f in ../../app/java/*; do ln -s $f;done
+
+for f in /opt/local/java/jre/bin/*; do ln -sf $f /usr/bin/; done
