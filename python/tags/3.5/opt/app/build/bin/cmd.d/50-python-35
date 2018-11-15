@@ -1,0 +1,22 @@
+#!/bin/bash -xe
+export CONDA_PYTHON_VERSION=3.5
+export CONDA_URL="https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+export CONDA_TMP="/tmp/conda"
+export CONDA_DIR="/opt/app/python"
+
+rm -f /opt/app/build/bin/post.d/{70-update-libs,80-root-profile}
+mkdir -p "${CONDA_TMP}" "${CONDA_DIR}"
+cd "${CONDA_TMP}"
+wget -c "${CONDA_URL}"
+
+bash $(basename ${CONDA_URL}) -b -p $(pwd)/conda
+$(pwd)/conda/bin/conda install -m -p ${CONDA_DIR}/${CONDA_PYTHON_VERSION} -y python=${CONDA_PYTHON_VERSION} conda pip virtualenv
+
+cd /opt
+${CONDA_DIR}/${CONDA_PYTHON_VERSION}/bin/pip install --upgrade pip
+${CONDA_DIR}/${CONDA_PYTHON_VERSION}/bin/conda install -y -c conda-forge python-confluent-kafka
+${CONDA_DIR}/${CONDA_PYTHON_VERSION}/bin/conda install -y requests
+test -e "${CONDA_DIR}/bin" || ln -s "${CONDA_PYTHON_VERSION}/bin" "${CONDA_DIR}/"
+rm -rf "${CONDA_TMP}" "${CONDA_DIR}/${CONDA_PYTHON_VERSION}/pkgs"/*
+
+for f in "${CONDA_DIR}/bin"/{python,pip}3; do ln -s $f /usr/bin || true; done
