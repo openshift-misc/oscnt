@@ -1,0 +1,20 @@
+#!/bin/bash -xe
+export BYOBU_PREFIX="/opt/app/byobu"
+export PYTHON_PREFIX="/opt/app/python"
+
+mkdir -p "${BYOBU_PREFIX}"/{bin,lib,share}
+cd "${BYOBU_PREFIX}"/bin
+cp -a /usr/bin/byobu* .
+cp -a /usr/lib/byobu "${BYOBU_PREFIX}"/lib
+cp -a /usr/share/byobu "${BYOBU_PREFIX}"/share
+
+apk add tmux
+apk del python3 byobu
+
+cd /usr/bin
+for f in "${BYOBU_PREFIX}"/bin/*; do
+	ln -s $f
+done
+for f in "${PYTHON_PREFIX}/bin"/{python,pip}3; do
+	ln -s $f
+done
