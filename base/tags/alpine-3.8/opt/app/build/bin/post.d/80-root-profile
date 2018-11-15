@@ -1,0 +1,3 @@
+#!/bin/bash -xe
+cp -a /opt/local/.bash* /root/
+chown root:root /opt/local/.bash*

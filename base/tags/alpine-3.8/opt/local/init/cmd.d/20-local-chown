@@ -1,0 +1,5 @@
+#!/bin/bash
+if [ $(stat -c '%g' ${LOCAL}) -eq $(id -u) ]; then
+  find ${LOCAL} \( ! -user user -o ! -group root \) -type d -exec chown user:root \{} \; 2>/dev/null || true
+  find ${LOCAL} \( ! -user user -o ! -group root \) -type f -exec chown user:root \{} \; 2>/dev/null || true
+fi

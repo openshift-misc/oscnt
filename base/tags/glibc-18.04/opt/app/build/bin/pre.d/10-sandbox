@@ -1,0 +1,14 @@
+#!/bin/bash -xe
+mkdir -p ${UBUNTU}/{pkg,rootfs} /usr/lib/x86_64-linux-gnu
+touch ${UBUNTU}/pkg/status
+cd ${UBUNTU}
+
+# Download, extract
+wget -c ${URL}
+tar xfz ${IMG}
+rm -f ${IMG}
+
+# Configure
+cp /etc/resolv.conf etc/
+echo 'deb http://ap-southeast-1.ec2.archive.ubuntu.com/ubuntu bionic main universe' > etc/apt/sources.list
+echo 'deb http://ap-southeast-1.ec2.archive.ubuntu.com/ubuntu bionic-updates main universe' >> etc/apt/sources.list

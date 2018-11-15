@@ -1,4 +1,0 @@
-#!/bin/bash -xe
-apk upgrade
-apk add bash rsync dropbear-ssh tzdata py-pip fakeroot logrotate \
-  file binutils wget ca-certificates htop

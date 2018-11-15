@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ $(id -u) -eq 0 ];then
+  run-parts ${LOCAL}/init/root.d
+else
+  run-parts ${LOCAL}/init/user.d
+fi
+exec supervisord -n -c ${LOCAL}/supervisor/supervisord.conf

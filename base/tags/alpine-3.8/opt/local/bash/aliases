@@ -1,0 +1,3 @@
+for f in ${LOCAL}/bash/aliases.d/*.sh; do
+    . "$f"
+done

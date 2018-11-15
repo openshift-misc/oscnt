@@ -1,0 +1,33 @@
+#!/bin/bash
+CMD=${LOCAL}/init/cmd
+CMD_COMPAT=${LOCAL}/entry/cmd
+
+echo
+echo "Container started, running as '$(id)'."
+echo
+
+if [ -x "${CMD}" ]; then
+  echo "Running ${CMD}"
+  exec "${CMD}"
+elif [ -x "${CMD_COMPAT}" ]; then
+  echo "${CMD} not found. Make sure your persistent storage is up to date."
+  echo "Running ${CMD_COMPAT} instead."
+  exec "${CMD_COMPAT}"
+else
+  echo "${CMD} not found, waiting 10 seconds."
+  sleep 10
+  if [ ! -x "${CMD}" ]; then
+    echo "${CMD} still not found, assuming empty persistent storage."
+    echo "Extracting ${LOCAL}.container.tar.gz"
+    pushd ${LOCAL}/..
+    tar xfz ${LOCAL}.container.tar.gz
+    popd
+  fi
+  if [ -x "${CMD}" ]; then
+    echo "Running ${CMD}"
+    exec "${CMD}"
+  else
+    echo "${CMD} still not found, waiting 1 hour before terminating."
+    sleep 86400
+  fi
+fi
