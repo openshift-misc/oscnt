@@ -1,0 +1,26 @@
+#!/bin/bash -xe
+apk add git apache2 apache2-ssl apache2-http2 apache2-proxy \
+  php5 php5-fpm php5-pgsql php5-mysql php5-mysqli php5-sqlite3 \
+  php5-pdo_pgsql php5-pdo_mysql php5-pdo_sqlite \
+  php5-ctype php5-soap php5-json php5-dom php5-curl php5-xml \
+  php5-ldap php5-openssl php5-mcrypt php5-gd php5-opcache 
+
+mkdir -p /opt/local/apache2/log
+mkdir -p /opt/local/php5/log
+ln -s /usr/lib/apache2 /opt/local/apache2/modules
+mkdir -p /opt/app/apache2/bin
+ln -s /usr/sbin/httpd /opt/app/apache2/bin/
+
+mkdir -p /opt/local/php5/conf.d
+ln -s /usr/lib/php5/modules /opt/local/php5/
+cd /opt/local/php5/modules
+for f in $(ls *.so | grep -v opcache);do echo "extension=$f" > /opt/local/php5/conf.d/$(basename $f .so).ini;done
+cd /opt/local/php5/conf.d/
+for f in openssl;do mv $f.ini 20-$f.ini;done
+for f in xml;do mv $f.ini 30-$f.ini;done
+echo zend_extension=opcache.so > 10-opcache.ini
+
+mkdir -p /opt/app/php5/bin /opt/local/php5/bin
+ln -s /usr/*bin/php-fpm5 /opt/app/php5/bin/php-fpm5
+ln -s /usr/bin/php5 /opt/app/php5/bin/php5
+ln -sf /opt/app/php5/bin/php /usr/bin/php
