@@ -1,5 +1,0 @@
-#!/bin/bash -xe
-mv /opt/app/build /opt.app.build.tmp
-cp -al /opt.build/* /opt/
-cp -al /opt.app.build.tmp/* /opt/app/build/
-rm -rf /opt.build /opt.app.build.tmp
