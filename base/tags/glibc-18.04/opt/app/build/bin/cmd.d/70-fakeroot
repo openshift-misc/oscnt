@@ -1,0 +1,15 @@
+#!/bin/bash -xe
+cd ${UBUNTU}/rootfs
+mv /usr/lib/libfakeroot-0.so /usr/lib/libfakeroot-alpine.so
+apk del fakeroot
+cp -af usr/bin/fake* /usr/bin/
+
+cd /usr/bin
+ln -s faked-sysv faked
+ln -s fakeroot-sysv fakeroot
+
+cd /usr/lib
+mkdir x86_64-linux-gnu/libfakeroot
+mv x86_64-linux-gnu/libfakeroot-* x86_64-linux-gnu/libfakeroot/
+ln -s x86_64-linux-gnu/libfakeroot/libfakeroot-sysv.so libfakeroot.so
+

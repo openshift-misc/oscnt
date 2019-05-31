@@ -1,0 +1,5 @@
+#!/bin/bash -xe
+allow_group ${LOCAL}
+cd /opt
+rm -f local.*z
+tar czf local.container.tar.gz local
