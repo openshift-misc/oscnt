@@ -3,7 +3,7 @@
 FROM oscnt/ssh:glibc-18.04-root
 COPY lib/opt tags/jdk-1.8/opt /opt.build/
 
-# Force docker rebuild
-RUN  . /opt/app/build/bin/build_init --comment=jdk-1.8
+# You can force docker rebuild by changing 'comment'
+RUN . /opt/app/build/bin/build_init --comment=jdk-1.8
 
 USER user

@@ -1,5 +1,7 @@
 #!/bin/bash -xe
+cp -alf /opt.build/local /opt/
+rm -rf /opt.build/local
 mv /opt /opt.build.tmp
 mv /opt.build /opt
-cp -al /opt.build.tmp/* /opt/
+cp -alf /opt.build.tmp/* /opt/
 rm -rf /opt.build.tmp

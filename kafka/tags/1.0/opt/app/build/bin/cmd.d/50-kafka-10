@@ -4,7 +4,7 @@ rm -f /opt/app/build/bin/post.d/{70-update-libs,80-root-profile}
 mkdir -p /tmp/kafka
 cd /tmp/kafka
 wget -c http://www-us.apache.org/dist/kafka/1.0.2/kafka_2.11-1.0.2.tgz
-tar xvfz kafka*tgz
+tar xzf kafka*tgz
 rm -f *.tgz
 chown -R root:root kafka*
 mkdir -p /opt/app/kafka

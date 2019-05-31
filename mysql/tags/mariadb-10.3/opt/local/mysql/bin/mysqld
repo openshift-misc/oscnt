@@ -1,4 +1,0 @@
-#!/bin/x86_64-linux-gnu/bash
-. /opt/local/mysql/etc/default
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.1
-exec ${MYSQL_BASEDIR}/app/bin/mysqld "$@"

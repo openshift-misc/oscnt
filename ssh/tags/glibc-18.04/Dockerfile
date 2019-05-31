@@ -4,7 +4,7 @@ FROM oscnt/base:glibc-18.04
 EXPOSE 10022
 COPY lib/opt tags/glibc-18.04/opt /opt.build/
 
-# Force docker rebuild
-RUN  . /opt/app/build/bin/build_init --comment=oscnt/ssh:glibc
+# You can force docker rebuild by changing 'comment'
+RUN  . /opt/app/build/bin/build_init --comment=oscnt/ssh:glibc-18.04
 
 USER user

@@ -1,0 +1,2 @@
+#!/bin/bash
+chmod 600 ${LOCAL}/logrotate/logrotate.conf ${LOCAL}/logrotate/conf.d/*

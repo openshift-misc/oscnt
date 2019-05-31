@@ -3,5 +3,5 @@ cd ${UBUNTU}
 chroot . apt -y update
 chroot . apt -y install gnupg
 
-echo 'deb [arch=amd64] http://sgp1.mirrors.digitalocean.com/mariadb/repo/10.3/ubuntu bionic main' > etc/apt/sources.list.d/mariadb-102.list
+echo 'deb [arch=amd64] http://sgp1.mirrors.digitalocean.com/mariadb/repo/10.3/ubuntu bionic main' > etc/apt/sources.list.d/mariadb-103.list
 chroot . apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8

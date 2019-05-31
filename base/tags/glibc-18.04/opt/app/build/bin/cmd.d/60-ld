@@ -4,3 +4,5 @@ mkdir -p /lib64
 cp usr/share/libc-bin/nsswitch.conf /etc/
 tar cf - etc/ld.* {sbin,usr/bin}/ld* usr/lib/locale/C.UTF-8 | ( cd / && tar xvf - )
 ln -s /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib64/
+
+/opt/app/build/bin/post.d/70-update-libs

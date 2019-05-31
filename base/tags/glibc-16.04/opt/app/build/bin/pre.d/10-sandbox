@@ -5,7 +5,7 @@ cd ${UBUNTU}
 
 # Download, extract
 wget -c ${URL}
-tar xfz ${IMG}
+tar xzf ${IMG}
 rm -f ${IMG}
 
 # Configure

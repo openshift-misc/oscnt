@@ -1,2 +1,0 @@
-#!/bin/sh
-exec /usr/sbin/logrotate -s /opt/local/logrotate/logrotate.status /opt/local/logrotate/logrotate.conf

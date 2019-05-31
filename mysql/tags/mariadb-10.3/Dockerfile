@@ -5,6 +5,6 @@ EXPOSE 3306
 COPY lib/opt tags/mariadb-10.3/opt /opt.build/
 
 # You can force docker rebuild by changing 'comment'
-RUN  . /opt/app/build/bin/build_init --comment=mariadb-10.3.10
+RUN  . /opt/app/build/bin/build_init --comment=mariadb-10.3.15
 
 USER user

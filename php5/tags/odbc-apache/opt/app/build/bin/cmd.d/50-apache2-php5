@@ -6,8 +6,12 @@ chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg
 chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
 
 cd ${UBUNTU}/rootfs
-# isql
-touch /etc/odbc.ini /etc/odbcinst.ini
+
+# odbc
+mkdir -p ${LOCAL}/home
+touch ${LOCAL}/home/.odbc.ini ${LOCAL}/home/.odbcinst.ini
+ln -s ${LOCAL}/home/.odbc.ini /etc/odbc.ini
+ln -s ${LOCAL}/home/.odbcinst.ini /etc/odbcinst.ini
 cp -a usr/bin/isql /usr/bin/
 
 # apache2
