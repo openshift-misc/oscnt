@@ -1,4 +1,0 @@
-#!/bin/bash
-cd ${UBUNTU}
-chroot . add-apt-repository -y ppa:ondrej/apache2
-chroot . add-apt-repository -y ppa:ondrej/php
