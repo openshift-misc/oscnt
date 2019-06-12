@@ -1,0 +1,26 @@
+#!/bin/bash -xe
+cd /
+mkdir -p /opt/app/{apache2,php72}/bin /opt/local/{apache2,php72}/log
+
+apt install -y --no-install-recommends libc-bin git apache2 unixodbc unixodbc-dev php7.2-cli php7.2-fpm php7.2-pgsql php7.2-mysql php7.2-mysqli php7.2-sqlite3 php7.2-odbc php7.2-mbstring php7.2-ctype php7.2-soap php7.2-json php7.2-dom php7.2-curl php7.2-xml php7.2-ldap php7.2-gd php7.2-opcache
+
+# isql
+touch /etc/odbc.ini /etc/odbcinst.ini
+
+# apache2
+ln -s /usr/lib/apache2/modules /opt/app/apache2/
+ln -s /usr/sbin/apache2 /opt/app/apache2/bin/httpd
+ln -s /opt/app/apache2/modules /opt/local/apache2/
+
+# php7.2
+mkdir -p /opt/app/php72/modules /opt/local/php72/conf.d
+for f in /usr/lib/php/*/*.so; do ln -s $f /opt/app/php72/modules/; done
+ln -s /usr/sbin/php-fpm7.2 /opt/app/php72/bin/php-fpm72
+ln -s /usr/bin/php7.2 /opt/app/php72/bin/php72
+ln -sf /opt/app/php72/bin/php /usr/bin/
+ln -s /opt/app/php72/modules /opt/local/php72/
+cd /opt/local/php72/modules
+for f in $(ls *.so | grep -v opcache);do echo "extension=$f" > /opt/local/php72/conf.d/$(basename $f .so).ini;done
+cd /opt/local/php72/conf.d/
+for f in mysqlnd xml;do mv $f.ini 30-$f.ini;done
+echo zend_extension=opcache.so > 10-opcache.ini

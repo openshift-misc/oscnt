@@ -1,0 +1,5 @@
+/opt/local/php72/log/*log {
+    postrotate
+        kill -USR1 $(cat /tmp/php72/fpm.pid) || true
+    endscript
+}

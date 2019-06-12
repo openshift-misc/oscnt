@@ -1,0 +1,3 @@
+#!/bin/bash
+export PHP_INI_SCAN_DIR="/opt/local/php72/conf.d"
+exec /opt/app/php72/bin/php72 -c /opt/local/php72 "$@"

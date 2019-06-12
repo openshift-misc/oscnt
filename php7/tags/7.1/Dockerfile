@@ -5,6 +5,6 @@ EXPOSE 1080 1443
 COPY lib/opt tags/7.1/opt /opt.build/
 
 # Force docker rebuild
-RUN  . /opt/app/build/bin/build_init --comment=php-7.1.24
+RUN  . /opt/app/build/bin/build_init --comment=php-7.1.29
 
 USER user

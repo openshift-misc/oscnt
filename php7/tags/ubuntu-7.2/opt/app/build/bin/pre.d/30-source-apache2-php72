@@ -1,0 +1,3 @@
+#!/bin/bash
+add-apt-repository -y ppa:ondrej/apache2
+add-apt-repository -y ppa:ondrej/php

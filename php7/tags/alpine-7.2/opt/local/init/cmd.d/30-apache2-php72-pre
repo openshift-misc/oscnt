@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -rf /dev/shm/php72/session
+mkdir -p /tmp/apache2 /tmp/php72 /dev/shm/php72/session
