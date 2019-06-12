@@ -1,4 +1,0 @@
-#!/bin/bash -xe
-cd ${UBUNTU}/rootfs
-for f in $(find lib/x86_64-linux-gnu usr/lib -maxdepth 1 -name 'l*.so*' 2>/dev/null) $(find usr/lib/x86_64-linux-gnu -name 'lib*.so*' 2>/dev/null);do test -e /usr/lib/x86_64-linux-gnu/$(basename $f) || cp -a $f /usr/lib/x86_64-linux-gnu/;done
-ldconfig

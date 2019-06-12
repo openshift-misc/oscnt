@@ -1,9 +1,0 @@
-### This script must be sourced in Dockerfile
-set -x
-set -e
-rm -f /opt/app/build/bin/cmd.d/*
-mkdir -p /opt/app 
-cp -a /opt.build/app/build /opt/app/
-. /opt/app/build/etc/default
-bash ${BUILD}/bin/set_executable ${BUILD}/bin
-build_run
