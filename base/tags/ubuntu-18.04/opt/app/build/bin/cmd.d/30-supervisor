@@ -1,0 +1,8 @@
+#!/bin/bash -xe
+pip install supervisor 
+find /usr/lib/python* \( -name '*.pyc' -o -name '*.pyo' \) -exec rm -f \{} \;
+supervisord -h > /dev/null && supervisorctl -h > /dev/null 
+echo_supervisord_conf > /etc/supervisord.sample.conf 
+ln -s ${LOCAL}/supervisor/supervisord.conf /etc/ 
+mv $(which supervisorctl) /usr/bin/supervisorctl.real 
+ln -s /opt/app/scripts/supervisorctl /usr/bin/ 

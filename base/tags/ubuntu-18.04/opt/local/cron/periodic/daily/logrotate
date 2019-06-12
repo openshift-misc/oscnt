@@ -1,4 +1,2 @@
 #!/bin/sh
-export FAKEROOTKEY="1000"
-export LD_PRELOAD="/usr/lib/libfakeroot.so"
 exec /usr/sbin/logrotate -s /opt/local/logrotate/logrotate.status /opt/local/logrotate/logrotate.conf

@@ -1,0 +1,3 @@
+#!/bin/bash -xe
+busybox --install -s /bin/
+ln -sf /bin/crontab /usr/bin/

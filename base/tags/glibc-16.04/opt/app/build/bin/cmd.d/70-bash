@@ -1,0 +1,3 @@
+#!/bin/bash -xe
+cd ${UBUNTU}/rootfs
+cp -af bin/bash /bin/

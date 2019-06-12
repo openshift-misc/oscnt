@@ -1,0 +1,2 @@
+#!/bin/bash -xe
+find "$@" -type f \( -perm -100 -o -name '*.so*' \) -exec strip_one \{} \;

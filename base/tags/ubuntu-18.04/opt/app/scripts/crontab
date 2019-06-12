@@ -1,0 +1,2 @@
+#!/bin/bash
+exec fakeroot /usr/bin/crontab -c ${LOCAL}/cron/crontabs -u user "$@"

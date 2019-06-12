@@ -1,0 +1,3 @@
+#!/bin/bash -xe
+localepurge
+rm -rf ${SRC} /var/cache/apt/* /var/lib/apt/lists/* root/{.wget-hsts,.*_history,.cache} /tmp/*

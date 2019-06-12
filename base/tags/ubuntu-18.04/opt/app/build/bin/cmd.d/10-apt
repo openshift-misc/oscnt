@@ -1,0 +1,6 @@
+#!/bin/bash -xe
+apt upgrade -y
+mv /opt.build/local/locale.nopurge /etc/
+apt install -y --no-install-recommends localepurge rsync dropbear-bin tzdata \
+  python-pip python-setuptools python-wheel fakeroot logrotate \
+  file binutils wget curl ca-certificates htop

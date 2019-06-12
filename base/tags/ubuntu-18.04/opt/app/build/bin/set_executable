@@ -1,0 +1,2 @@
+#!/bin/bash -xe
+find "$@" ! -perm -110 -type f -exec chmod u+r,u+x,g+r,g+x \{} \;

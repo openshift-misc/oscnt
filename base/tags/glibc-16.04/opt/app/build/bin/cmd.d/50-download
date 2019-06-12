@@ -1,4 +1,4 @@
 #!/bin/bash -xe
 cd ${UBUNTU}
-chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' libc-bin
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' libc-bin bash fakeroot
 chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'

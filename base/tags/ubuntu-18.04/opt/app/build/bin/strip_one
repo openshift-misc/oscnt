@@ -1,0 +1,2 @@
+#!/bin/bash -xe
+file "$1" | egrep -q "ELF.+not stripped" && /usr/bin/strip "$1"

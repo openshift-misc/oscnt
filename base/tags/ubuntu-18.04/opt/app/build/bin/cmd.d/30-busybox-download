@@ -1,0 +1,15 @@
+#!/bin/bash -xe
+export BB_TMP=/tmp/busybox
+export BB_URL=https://rpmfind.net/linux/mageia/distrib/6/x86_64/media/core/updates/busybox-1.25.1-1.1.mga6.x86_64.rpm
+
+mkdir ${BB_TMP}
+cd ${BB_TMP}
+wget ${BB_URL}
+apt -y install --no-install-recommends rpm cpio
+rpm2cpio *.rpm | cpio -idm
+apt purge -y rpm cpio
+apt autoremove -y
+mv -f ./usr/bin/busybox /bin/
+
+cd /
+rm -rf ${BB_TMP}
