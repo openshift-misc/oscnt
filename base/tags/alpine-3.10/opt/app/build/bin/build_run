@@ -1,0 +1,4 @@
+#!/bin/bash -xe
+run-parts -v --exit-on-error ${BUILD}/bin/pre.d
+run-parts -v --exit-on-error ${BUILD}/bin/cmd.d
+run-parts -v --exit-on-error ${BUILD}/bin/post.d

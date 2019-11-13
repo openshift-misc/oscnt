@@ -1,0 +1,3 @@
+for f in /opt/local/env/env.d/*.env; do
+  . $f
+done
