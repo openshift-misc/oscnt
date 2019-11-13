@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 export BB_TMP=/tmp/busybox
-export BB_URL=https://github.com/ubuntu-pkg/busybox/releases/download/1_1.30.1_0ppa1_bionic/busybox-bin.tar.gz
+export BB_URL=https://github.com/ubuntu-pkg/busybox/releases/download/1_1.31.1_0ppa1_bionic/busybox-bin.tar.gz
 
 mkdir ${BB_TMP}
 cd ${BB_TMP}
