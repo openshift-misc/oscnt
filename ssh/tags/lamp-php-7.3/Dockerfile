@@ -6,6 +6,6 @@ COPY lib/opt tags/lamp-php-7.3/opt /opt.build/
 
 # Force docker rebuild
 RUN  rm -f /opt/app/build/bin/pre.d/* /opt/app/build/bin/post.d/70-update-libs && \
-  . /opt/app/build/bin/build_init --comment=php-7.3.5,mariadb-10.3.15
+  . /opt/app/build/bin/build_init --comment=php-7.3.11,mariadb-10.3.20
 
 USER user
