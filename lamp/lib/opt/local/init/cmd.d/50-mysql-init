@@ -14,5 +14,6 @@ if [ ! -e ${MYSQL_BASEDIR}/data/mysql/servers.frm ]; then
     mysql -u root -e "create user 'user'@'127.0.0.1'; grant all privileges on *.* to 'user'@'127.0.0.1' with grant option;"
     mysql -u root -e "create user 'user'@'localhost'; grant all privileges on *.* to 'user'@'localhost' with grant option;"
     mysql -e "flush privileges;"
+    mysql_upgrade -uuser
   ) &
 fi

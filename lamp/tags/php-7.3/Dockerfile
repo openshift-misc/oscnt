@@ -5,6 +5,6 @@ EXPOSE 3306
 COPY lib/opt tags/php-7.3/opt /opt.build/
 
 # Force docker rebuild
-RUN  . /opt/app/build/bin/build_init --comment=php-7.3.5,mariadb-10.3.15
+RUN  . /opt/app/build/bin/build_init --comment=php-7.3.11,mariadb-10.3.20
 
 USER user

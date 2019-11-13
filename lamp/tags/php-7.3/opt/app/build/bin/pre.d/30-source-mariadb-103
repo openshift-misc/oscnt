@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 cd ${UBUNTU}
 chroot . apt -y update
 chroot . apt -y install gnupg
