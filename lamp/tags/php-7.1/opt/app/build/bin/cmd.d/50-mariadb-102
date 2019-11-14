@@ -6,9 +6,12 @@ chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg
 chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
 
 cd ${UBUNTU}/rootfs
-cp -a usr/lib/mysql/* /opt/app/mysql/lib/
-cp -a usr/share/mysql/* /opt/app/mysql/share/
-cp -a usr/*bin/{my_,mysql,maria,resolv}* /opt/app/mysql/bin/
+#cp -al usr/lib/mysql/* /opt/app/mysql/lib/
+mkdir -p /opt/app/mysql/lib/plugin
+cp -al usr/lib/mysql/plugin/{ha_connect.so,ha_federatedx.so,ha_rocksdb.so,ha_tokudb.so} /opt/app/mysql/lib/plugin/
+cp -al usr/share/mysql/* /opt/app/mysql/share/
+#cp -al usr/*bin/{my_,mysql,maria,resolv}* /opt/app/mysql/bin/
+cp -al usr/*bin/{my_print_defaults,mysql,mysql_install_db,mysql_upgrade,mysql_waitpid,mysqladmin,mysqlbinlog,mysqlcheck,mysqlrepair,mysqlanalyze,mysqloptimize,mysqld,mysqld_safe,mysqld_safe_helper,mysqldump,mysqldumpslow,resolveip} /opt/app/mysql/bin/
 mv /opt/app/mysql/bin/mysql_install_db /opt/app/mysql/scripts/
 ln -s /opt/app/mysql /opt/local/mysql/app
 
