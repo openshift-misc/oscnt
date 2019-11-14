@@ -1,4 +1,5 @@
 #!/bin/sh
+. /etc/profile
 if [ $(id -u) -eq 0 ];then
   run-parts ${LOCAL}/init/root.d
 else
