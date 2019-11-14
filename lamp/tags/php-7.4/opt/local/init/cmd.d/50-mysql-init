@@ -1,0 +1,17 @@
+#!/bin/bash
+. /opt/local/mysql/etc/default
+if [ ! -e ${MYSQL_BASEDIR}/data/mysql/servers.frm ]; then 
+  cd ${MYSQL_BASEDIR}
+  mkdir data
+  if [ -x ./scripts/mysql_install_db ]; then 
+    ./scripts/mysql_install_db --defaults-file=/opt/local/mysql/etc/my.cnf
+  else
+    ./bin/mysqld --defaults-file=/opt/local/mysql/etc/my.cnf --initialize-insecure
+  fi
+  (
+    while ! mysqladmin ping; do sleep 1; done
+    mysql -e "delete from mysql.user where user not in ('user','root') and host not in ('localhost');"
+    mysql -e "flush privileges;"
+    mysql_upgrade -uuser
+  ) &
+fi

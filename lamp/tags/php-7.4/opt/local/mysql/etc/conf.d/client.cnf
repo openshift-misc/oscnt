@@ -1,0 +1,3 @@
+[client]
+socket          = /tmp/mysql/server.sock
+

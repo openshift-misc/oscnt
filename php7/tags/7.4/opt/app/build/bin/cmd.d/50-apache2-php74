@@ -1,0 +1,29 @@
+#!/bin/bash -xe
+mkdir -p /opt/app/{apache2,php74}/bin /opt/local/{apache2,php74}/log
+cd ${UBUNTU}
+
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' libc-bin git apache2 unixodbc unixodbc-dev php7.4-cli php7.4-fpm php7.4-pgsql php7.4-mysql php7.4-mysqli php7.4-sqlite3 php7.4-odbc php7.4-mbstring php7.4-ctype php7.4-soap php7.4-json php7.4-dom php7.4-curl php7.4-xml php7.4-ldap php7.4-gd php7.4-opcache php7.4-zip
+chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
+
+cd ${UBUNTU}/rootfs
+# isql
+touch /etc/odbc.ini /etc/odbcinst.ini
+cp -a usr/bin/isql /usr/bin/
+
+# apache2
+cp -a usr/lib/apache2/modules /opt/app/apache2/
+cp -a usr/sbin/apache2 /opt/app/apache2/bin/httpd
+ln -s /opt/app/apache2/modules /opt/local/apache2/
+
+# php7.4
+mkdir -p /opt/app/php74/modules /opt/local/php74/conf.d
+cp -a usr/lib/php/*/*.so /opt/app/php74/modules/
+cp -a usr/sbin/php-fpm7.4 /opt/app/php74/bin/php-fpm74
+cp -a usr/bin/php7.4 /opt/app/php74/bin/php74
+ln -s /opt/app/php74/bin/php /usr/bin/
+ln -s /opt/app/php74/modules /opt/local/php74/
+cd /opt/local/php74/modules
+for f in $(ls *.so | grep -v opcache);do echo "extension=$f" > /opt/local/php74/conf.d/$(basename $f .so).ini;done
+cd /opt/local/php74/conf.d/
+for f in mysqlnd xml;do mv $f.ini 30-$f.ini;done
+echo zend_extension=opcache.so > 10-opcache.ini

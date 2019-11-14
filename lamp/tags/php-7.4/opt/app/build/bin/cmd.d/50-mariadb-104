@@ -1,0 +1,32 @@
+#!/bin/bash -xe
+cd ${UBUNTU}
+mkdir -p /opt/app/mysql/{bin,lib,share,scripts} /opt/local/mysql/log
+
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' mariadb-client mariadb-server mariadb-backup mariadb-plugin-tokudb mariadb-plugin-rocksdb mariadb-plugin-connect
+chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
+
+cd ${UBUNTU}/rootfs
+#cp -al usr/lib/mysql/* /opt/app/mysql/lib/
+mkdir -p /opt/app/mysql/lib/plugin
+cp -al usr/lib/mysql/plugin/{ha_connect.so,ha_federatedx.so,ha_rocksdb.so,ha_tokudb.so} /opt/app/mysql/lib/plugin/
+cp -al usr/share/mysql/* /opt/app/mysql/share/
+#cp -al usr/*bin/{my_,mysql,maria,resolv}* /opt/app/mysql/bin/
+cp -al usr/*bin/{my_print_defaults,mysql,mysql_install_db,mysql_upgrade,mysql_waitpid,mysqladmin,mysqlbinlog,mysqlcheck,mysqlrepair,mysqlanalyze,mysqloptimize,mysqld,mysqld_safe,mysqld_safe_helper,mysqldump,mysqldumpslow,resolveip} /opt/app/mysql/bin/
+mv /opt/app/mysql/bin/mysql_install_db /opt/app/mysql/scripts/
+chmod u+r,u+x,g+r,g+x /opt/local/mysql/scripts/mysql_install_db
+ln -s /opt/app/mysql /opt/local/mysql/app
+
+# mariadb-10.4 needs jemalloc and libstdc++
+cd ${UBUNTU}/rootfs/usr/lib/x86_64-linux-gnu
+for f in libjemalloc.* libstdc++.*; do
+  test -e /usr/lib/x86_64-linux-gnu/$f || cp -al $f /usr/lib/x86_64-linux-gnu/
+done
+
+cd /opt/app/mysql
+rm -rf $(ls -d share/*|egrep -v "err|english|\.sql")
+cd bin
+for f in *; do ln -s mysql-client /opt/local/mysql/bin/$f || true; ln -s /opt/local/mysql/bin/$f /usr/bin/; done
+
+cd /opt/local/mysql
+#for d in lib share scripts; do ln -s /opt/app/mysql/$d; done
+for d in lib share; do ln -s /opt/app/mysql/$d; done
