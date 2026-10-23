@@ -1,0 +1,31 @@
+#!/bin/bash -xe
+mkdir -p /opt/app/{apache2,php83}/bin /opt/local/{apache2,php83}/log
+cd ${UBUNTU}
+
+# apache2 comes from the bionic archive, ppa:ondrej/apache2 no longer serves bionic
+chroot . apt install -y -d --no-install-recommends -o 'Dir::Cache::Archives=/pkg' -o 'Dir::State::status=/pkg/status' libc-bin git apache2 unixodbc unixodbc-dev
+chroot . bash -c 'for f in pkg/*.deb; do dpkg -x $f rootfs/; done'
+
+cd ${UBUNTU}/rootfs
+# isql
+touch /etc/odbc.ini /etc/odbcinst.ini
+cp -a usr/bin/isql /usr/bin/
+
+# apache2
+cp -a usr/lib/apache2/modules /opt/app/apache2/
+cp -a usr/sbin/apache2 /opt/app/apache2/bin/httpd
+ln -s /opt/app/apache2/modules /opt/local/apache2/
+
+# php8.3, built by 40-php83-build
+PHP_STAGE=${UBUNTU}/build/stage/opt/app/php83
+mkdir -p /opt/app/php83/modules /opt/local/php83/conf.d
+cp -a ${PHP_STAGE}/lib/php/extensions/*/*.so /opt/app/php83/modules/
+cp -a ${PHP_STAGE}/sbin/php-fpm /opt/app/php83/bin/php-fpm83
+cp -a ${PHP_STAGE}/bin/php /opt/app/php83/bin/php83
+ln -s /opt/app/php83/bin/php /usr/bin/
+ln -s /opt/app/php83/modules /opt/local/php83/
+cd /opt/local/php83/modules
+for f in $(ls *.so | grep -v opcache);do echo "extension=$f" > /opt/local/php83/conf.d/$(basename $f .so).ini;done
+cd /opt/local/php83/conf.d/
+for f in mysqlnd xml;do mv $f.ini 30-$f.ini;done
+echo zend_extension=opcache.so > 10-opcache.ini

@@ -1,0 +1,5 @@
+export LOCAL=/opt/local
+MYSQL_BASEDIR=${LOCAL}/mysql
+export MYSQL_HOME=${MYSQL_BASEDIR}/etc
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.1
+

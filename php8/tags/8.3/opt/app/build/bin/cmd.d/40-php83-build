@@ -1,0 +1,54 @@
+#!/bin/bash -xe
+# PHP 8.3 is no longer packaged for Ubuntu 18.04 (ppa:ondrej/php dropped bionic),
+# so build it from the php.net release against the bionic sandbox libraries.
+PHP_VERSION=8.3.36
+PHP_SHA256=c93f3441f87f6ab156bef4432db215d7e61ca2c0183bb3a2aa28d9886ab59f53
+PHP_URL=https://www.php.net/distributions/php-${PHP_VERSION}.tar.gz
+
+cd ${UBUNTU}
+chroot . apt install -y --no-install-recommends build-essential pkg-config file \
+  libargon2-0-dev libcurl4-openssl-dev libedit-dev libfreetype6-dev libicu-dev libjpeg-dev \
+  libldap2-dev libonig-dev libpng-dev libpq-dev libsasl2-dev libsodium-dev libsqlite3-dev \
+  libssl-dev libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev unixodbc-dev zlib1g-dev
+
+mkdir -p build
+wget -O build/php.tar.gz ${PHP_URL}
+echo "${PHP_SHA256}  build/php.tar.gz" | sha256sum -c -
+tar xzf build/php.tar.gz -C build
+
+# Same extension set as php7:7.3 (ondrej packages): static core extensions,
+# everything else shared so conf.d can enable it. json is built into PHP 8,
+# wddx was removed from PHP in 7.4.
+chroot . bash -xec "cd /build/php-${PHP_VERSION}
+./configure \
+  --prefix=/opt/app/php83 \
+  --with-config-file-path=/opt/local/php83 \
+  --with-config-file-scan-dir=/opt/local/php83/conf.d \
+  --disable-all --disable-cgi --disable-phpdbg --enable-fpm \
+  --enable-filter --enable-session --with-libxml --with-openssl --with-zlib \
+  --with-sodium --with-password-argon2 --enable-pcntl --with-pcre-jit \
+  --enable-opcache \
+  --enable-calendar=shared --enable-ctype=shared --with-curl=shared \
+  --enable-dom=shared --enable-exif=shared --enable-fileinfo=shared --enable-ftp=shared \
+  --enable-gd=shared --with-freetype --with-jpeg --with-webp --with-xpm \
+  --with-gettext=shared --with-iconv=shared --enable-intl=shared \
+  --with-ldap=shared --with-ldap-sasl --enable-mbstring=shared \
+  --enable-mysqlnd=shared --with-mysqli=shared,mysqlnd --with-pdo-mysql=shared,mysqlnd \
+  --with-unixODBC=shared,/usr --enable-pdo=shared --with-pdo-odbc=shared,unixODBC,/usr \
+  --with-pdo-pgsql=shared --with-pdo-sqlite=shared --with-pgsql=shared \
+  --enable-phar=shared --enable-posix=shared --with-libedit=shared \
+  --enable-shmop=shared --enable-simplexml=shared --enable-soap=shared --enable-sockets=shared \
+  --with-sqlite3=shared --enable-sysvmsg=shared --enable-sysvsem=shared --enable-sysvshm=shared \
+  --enable-tokenizer=shared --enable-xml=shared --enable-xmlreader=shared --enable-xmlwriter=shared \
+  --with-xsl=shared --with-zip=shared
+make -j\$(nproc)
+make install INSTALL_ROOT=/build/stage"
+
+# Stage the runtime libraries in rootfs, post.d/70-update-libs installs them
+PHP_STAGE=/build/stage/opt/app/php83
+for f in $(chroot . bash -c "ldd ${PHP_STAGE}/bin/php ${PHP_STAGE}/sbin/php-fpm ${PHP_STAGE}/lib/php/extensions/*/*.so" | awk '$3 ~ /^\// {print $3}' | sort -u); do
+  real=$(chroot . readlink -f $f)
+  mkdir -p rootfs$(dirname $f) rootfs$(dirname $real)
+  cp -a .$f rootfs$f
+  cp -a .$real rootfs$real
+done

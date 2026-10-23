@@ -1,0 +1,94 @@
+#!/bin/bash -e
+# Switch a persistent ${LOCAL} created by a php73 image over to php83,
+# keeping the php73 settings (php.ini, php-fpm.conf, fpm.d, custom conf.d).
+#   docker run --rm -v /path/to/persistent:/opt/local oscnt/ssh:lamp-php-8.3 /opt/app/scripts/php83-migrate
+# Switch back to php73 (for the old image) with --rollback.
+OLD=73
+NEW=83
+LOCAL=${LOCAL:-/opt/local}
+
+DEFAULTS=$(mktemp -d)
+trap 'rm -rf ${DEFAULTS}' EXIT
+tar xzf ${LOCAL}.container.tar.gz -C ${DEFAULTS}
+
+# Files that make supervisor, init, cron and logrotate use a php version
+hooks() {
+  echo supervisor/conf.d/php-fpm$1.conf init/cmd.d/30-apache2-php$1-pre \
+    cron/periodic/15min/clean-php$1-session logrotate/conf.d/php-fpm$1
+}
+
+# supervisor only includes *.conf, run-parts skips names with a dot,
+# logrotate skips .disabled
+disable() {
+  if [ -e ${LOCAL}/$1 ]; then
+    mv ${LOCAL}/$1 ${LOCAL}/$1.disabled
+    echo "disabled $1"
+  fi
+}
+
+enable() {
+  if [ -e ${LOCAL}/$1 ]; then
+    return
+  elif [ -e ${LOCAL}/$1.disabled ]; then
+    mv ${LOCAL}/$1.disabled ${LOCAL}/$1
+  elif [ -e ${DEFAULTS}/local/$1 ]; then
+    cp -a ${DEFAULTS}/local/$1 ${LOCAL}/$1
+  else
+    echo "$1 not found, skipped"
+    return
+  fi
+  echo "enabled $1"
+}
+
+# Point apache at the fpm socket of php version $2 instead of $1
+fpm_socket() {
+  local conf=${LOCAL}/apache2/conf.d/php.conf
+  if grep -q "/tmp/php$1/" ${conf}; then
+    cp -a ${conf} ${conf}.php$1-backup
+    sed "s|/tmp/php$1/|/tmp/php$2/|g" < ${conf}.php$1-backup > ${conf}
+    echo "apache2/conf.d/php.conf now uses /tmp/php$2/fpm.sock"
+  fi
+}
+
+if [ "$1" = "--rollback" ]; then
+  for h in $(hooks ${NEW}); do disable $h; done
+  for h in $(hooks ${OLD}); do enable $h; done
+  fpm_socket ${NEW} ${OLD}
+  echo "Rolled back to php${OLD}, start the php${OLD} image again."
+  exit 0
+fi
+
+O=${LOCAL}/php${OLD}
+N=${LOCAL}/php${NEW}
+if [ ! -d ${N} ]; then
+  cp -a ${DEFAULTS}/local/php${NEW} ${LOCAL}/
+  echo "created php${NEW} from image defaults"
+  if [ -d ${O} ]; then
+    # Drop directives removed from PHP 8, '#' comments are not valid in php.ini
+    sed -E -e "s/php${OLD}/php${NEW}/g" -e 's/^#/;/' \
+      -e '/^[[:space:]]*(asp_tags|track_errors|log_errors_max_len|sql\.safe_mode|session\.hash_function|session\.hash_bits_per_character|mysql\.[a-z_]+)[[:space:]]*=/d' \
+      < ${O}/php.ini > ${N}/php.ini
+    sed "s/php${OLD}/php${NEW}/g" < ${O}/php-fpm.conf > ${N}/php-fpm.conf
+    for f in ${O}/fpm.d/*.conf; do
+      [ -e ${f} ] || continue
+      sed "s/php${OLD}/php${NEW}/g" < ${f} > "${N}/fpm.d/$(basename "${f}")"
+    done
+    # php${NEW} loads its own extensions, only carry over ini files with other settings
+    for f in ${O}/conf.d/*.ini; do
+      [ -e ${f} ] || continue
+      if grep -qvE '^[[:space:]]*(;.*|(zend_)?extension[[:space:]]*=[[:space:]]*[^[:space:]]+\.so)?[[:space:]]*$' ${f}; then
+        sed "s/php${OLD}/php${NEW}/g" < ${f} > "${N}/conf.d/$(basename "${f}")"
+        echo "kept conf.d/$(basename ${f})"
+      fi
+    done
+    echo "copied settings from php${OLD} to php${NEW}"
+  fi
+fi
+
+for h in $(hooks ${OLD}); do disable $h; done
+for h in $(hooks ${NEW}); do enable $h; done
+fpm_socket ${OLD} ${NEW}
+if [ -L ${LOCAL}/home/php${OLD} ] && [ ! -e ${LOCAL}/home/php${NEW} ]; then
+  ln -s ../php${NEW} ${LOCAL}/home/php${NEW}
+fi
+echo "Migrated to php${NEW}."
