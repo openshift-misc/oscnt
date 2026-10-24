@@ -10,5 +10,7 @@ rm -f ${IMG}
 
 # Configure
 cp /etc/resolv.conf etc/
+# apt aborts in std::random_device without /dev/urandom in the chroot
+for d in null zero random urandom; do test -e dev/$d || cp -a /dev/$d dev/; done
 echo 'deb http://ap-southeast-1.ec2.archive.ubuntu.com/ubuntu bionic main universe' > etc/apt/sources.list
 echo 'deb http://ap-southeast-1.ec2.archive.ubuntu.com/ubuntu bionic-updates main universe' >> etc/apt/sources.list

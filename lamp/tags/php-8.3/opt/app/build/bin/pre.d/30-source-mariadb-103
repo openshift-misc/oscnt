@@ -1,0 +1,8 @@
+#!/bin/bash -xe
+cd ${UBUNTU}
+chroot . apt -y update
+chroot . apt -y install gnupg ca-certificates
+
+# MariaDB 10.3 is EOL, its last release only remains on archive.mariadb.org
+echo 'deb [arch=amd64] https://archive.mariadb.org/mariadb-10.3.39/repo/ubuntu bionic main' > etc/apt/sources.list.d/mariadb-103.list
+chroot . apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'

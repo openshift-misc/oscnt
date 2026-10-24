@@ -1,5 +1,6 @@
 #!/bin/bash -xe
-PYNEWT_URL="http://dl.alpinelinux.org/alpine/v3.9/main/x86_64/py-newt-0.52.20-r0.apk"
+#PYNEWT_URL="http://dl.alpinelinux.org/alpine/v3.9/main/x86_64/py-newt-0.52.20-r0.apk"
+PYNEWT_URL="https://dl-4.alpinelinux.org/alpine/v3.9/main/x86_64/py-newt-0.52.20-r0.apk"
 
 apk update
 #apk add dropbear openssh-keygen openssh-sftp-server byobu py-newt xauth

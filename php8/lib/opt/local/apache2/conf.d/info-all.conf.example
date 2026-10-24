@@ -1,0 +1,14 @@
+# apache/php status info, disabled by default
+# rename this file to 'info-all.conf' to activate it
+# you should also add authentication or client IP limit
+<Directory "/opt/local/www/info">
+    Options FollowSymLinks
+    AllowOverride all
+    Require all granted
+</Directory>
+Alias "/info/" "/opt/local/www/info/"
+
+<Location /info/http>
+    SetHandler server-status
+</Location>
+ExtendedStatus On
